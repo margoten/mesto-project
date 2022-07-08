@@ -1,0 +1,23 @@
+.form__button-save {
+  background-color: #000;
+  height: 50px;
+  width: 100%;
+  color: #fff;
+  font-family: "Inter", Arial, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: center;
+  outline-width: 0;
+  transition: opacity 0.5s;
+  padding: 0;
+  border: 0;
+}
+
+.form__button-save:hover {
+  opacity: 0.8;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 17px;
+}

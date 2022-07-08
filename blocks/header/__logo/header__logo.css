@@ -1,0 +1,18 @@
+.header__logo {
+  content: url(../../../images/header_logo.svg);
+  width: 142px;
+  height: 33px;
+}
+
+@media screen and (max-width: 767px) {
+  .header__logo {
+    width: 103.74px;
+    height: 24.4px;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .header__logo {
+    padding-left: 27px;
+  }
+}

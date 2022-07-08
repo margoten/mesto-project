@@ -1,0 +1,20 @@
+.place__like {
+  background: url(../../../images/like.svg) no-repeat center;
+  width: 24px;
+  height: 24px;
+  background-size: auto;
+  transition: background-image 0.5s;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  align-self: center;
+}
+
+.place__like:hover {
+  background: url(../../../images/like-hover.svg) no-repeat center;
+  cursor: pointer;
+}
+
+.place__like:active {
+  background: url(../../../images/like-active.svg) no-repeat center;
+}

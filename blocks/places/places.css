@@ -1,0 +1,13 @@
+.places {
+  padding: 50px 0 0;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media screen and (max-width: 320px) {
+  .places {
+    padding: 36px 19px 0;
+    width: calc(100% - 38px);
+  }
+}
+
