@@ -4,10 +4,13 @@
   flex-direction: column;
   margin: 0;
   padding: 0;
+  max-width: calc(100% - 300px - 32px);
 }
 
 @media screen and (max-width: 767px) {
   .profile__info {
     margin: 0 0 33px 0;
+    max-width: calc(100% - 100px);
+    min-width: 282px;
   }
 }
