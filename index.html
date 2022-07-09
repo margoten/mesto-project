@@ -11,86 +11,86 @@
 <body class="root">
   <div class="page">
     <header class="header">
-      <a href="" class="header__logo"></a>
+      <a href="#" class="header__logo"></a>
     </header>
     <main class="content">
       <section class="profile">
-        <img class="profile__avatar" src="images/profile-avatar.jpg" alt="">
+        <img class="profile__avatar" src="images/profile-avatar.jpg" alt="Аватар">
         <div class="profile__info">
           <div class="profile__heading">
             <h1 class="profile__title">Жак-Ив Кусто</h1>
-            <button class="profile__edit-button"></button>
+            <button class="profile__edit-button" type="button"></button>
           </div>
           <p class="profile__description">Исследователь океана</p>
         </div>
-        <button class="profile__add-button"></button>
+        <button class="profile__add-button" type="button"></button>
       </section>
       <section class="places">
         <ul class="places__list">
           <li>
-            <figure class="place">
+            <div class="place">
               <img class="place__image" src="images/kharachaevsk.jpg" alt="Карачаевск" />
-              <figcaption class="place__caption">
+              <div class="place__caption">
                 <h2 class="place__name">Карачаевск</h2>
-                <button class="place__like"></button>
-              </figcaption>
-            </figure>
+                <button class="place__like" type="button"></button>
+              </div>
+            </div>
           </li>
           <li>
-            <figure class="place">
+            <div class="place">
               <img class="place__image" src="images/elbrus.jpg" alt="Гора Эльбрус" />
-              <figcaption class="place__caption">
+              <div class="place__caption">
                 <h2 class="place__name">Гора Эльбрус</h2>
-                <button class="place__like"></button>
-              </figcaption>
-            </figure>
+                <button class="place__like" type="button"></button>
+              </div>
+            </div>
           </li>
           <li>
-            <figure class="place">
+            <div class="place">
               <img class="place__image" src="images/dombai.jpg" alt="Домбай" />
-              <figcaption class="place__caption">
+              <div class="place__caption">
                 <h2 class="place__name">Домбай</h2>
-                <button class="place__like"></button>
-              </figcaption>
-            </figure>
+                <button class="place__like" type="button"></button>
+              </div>
+            </div>
           </li>
           <li>
-            <figure class="place">
+            <div class="place">
               <img class="place__image" src="images/elbrus.jpg" alt="Гора Эльбрус" />
-              <figcaption class="place__caption">
+              <div class="place__caption">
                 <h2 class="place__name">Гора Эльбрус</h2>
-                <button class="place__like"></button>
-              </figcaption>
-            </figure>
+                <button class="place__like" type="button"></button>
+              </div>
+            </div>
           </li>
           <li>
-            <figure class="place">
+            <div class="place">
               <img class="place__image" src="images/dombai.jpg" alt="Домбай" />
-              <figcaption class="place__caption">
+              <div class="place__caption">
                 <h2 class="place__name">Домбай</h2>
-                <button class="place__like"></button>
-              </figcaption>
-            </figure>
+                <button class="place__like" type="button"></button>
+              </div>
+            </div>
           </li>
           <li>
-            <figure class="place">
+            <div class="place">
               <img class="place__image" src="images/kharachaevsk.jpg" alt="Карачаево-Черкесия" />
-              <figcaption class="place__caption">
+              <div class="place__caption">
                 <h2 class="place__name">Карачаево-Черкесия</h2>
-                <button class="place__like"></button>
-              </figcaption>
-            </figure>
+                <button class="place__like" type="button"></button>
+              </div>
+            </div>
           </li>
         </ul>
       </section>
-      <section class="popup popup_opened">
+      <section class="popup">
         <div class="popup__container">
           <button class="popup__close"></button>
-          <form class="form">
-            <h2 class="form__heading">Редактироваь профиль</h2>
-            <input type="text" class="form__item form__item-name" placeholder="Имя" value="Жак-Ив Кусто" required>
+          <form class="form" name="profile-edit">
+            <h2 class="form__heading">Редактировать профиль</h2>
+            <input type="text" class="form__item form__item-name" placeholder="Имя" value="Жак-Ив Кусто" name="name" required>
             <input type="text" class="form__item form__item-description" placeholder="Деятельность"
-              value="Исследователь океана" required>
+              value="Исследователь океана" name="description" required>
             <button class="form__button-save" type="submit">Сохранить</button>
           </form>
         </div>

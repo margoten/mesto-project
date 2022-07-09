@@ -1,12 +1,12 @@
 .header {
-  border-bottom: 1px solid #545454;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
-  height: 74px;
-  padding: 45px 0 0;
+  border-bottom: 1px solid #545454;
   margin: 0 auto;
+  padding: 45px 0 0;
+  height: 74px;
   width: 100%;
 }
 

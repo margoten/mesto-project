@@ -2,6 +2,7 @@
   content: url(../../../images/header_logo.svg);
   width: 142px;
   height: 33px;
+  padding: 0;
 }
 
 @media screen and (max-width: 767px) {

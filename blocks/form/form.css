@@ -1,11 +1,17 @@
 .form {
-  width: 430px;
-  max-width: 430px;
   background-color: #fff;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
-  padding: 34px 36px 36px;
+  padding: 34px 36px 37px;
   box-sizing: border-box;
   margin: 0 auto;
+  width: 430px;
+  max-width: 430px;
+}
+
+@media screen and (max-width: 767px) {
+  .form {
+    padding: 25px 22px;
+  }
 }
