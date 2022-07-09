@@ -1,8 +1,6 @@
 .popup__container {
   display: flex;
   align-self: center;
-  flex-direction: row;
-  margin: 0 auto;
   position: relative;
   max-width: 430px;
 }

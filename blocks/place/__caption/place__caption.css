@@ -1,7 +1,6 @@
 .place__caption {
   background-color: #fff;
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
   margin: 0;
   padding: 25px 18px 25px 21px;
