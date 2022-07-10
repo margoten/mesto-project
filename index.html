@@ -19,7 +19,7 @@
         <div class="profile__info">
           <div class="profile__heading">
             <h1 class="profile__title">Жак-Ив Кусто</h1>
-            <button class="profile__edit-button" type="button"></button>
+            <button class="profile__edit-button" type="button" aria-label="Редактировать"></button>
           </div>
           <p class="profile__description">Исследователь океана</p>
         </div>
@@ -78,17 +78,14 @@
     <div class="popup">
       <div class="popup__container">
         <button class="popup__close-button" type="button" aria-label="Закрыть форму"></button>
-        <div class="popup__form">
-          <h2 class="popup__form-heading">Редактировать профиль</h2>
-          <form class="form" name="profile-edit">
-            <input type="text" class="form__item form__item-name popup__input popup__input_data_name" placeholder="Имя"
-              value="Жак-Ив Кусто" name="name" required>
-            <input type="text" class="form__item form__item-description popup__input popup__input_data_description"
-              placeholder="Деятельность" value="Исследователь океана" name="description" required>
-            <button class="form__save-button" type="submit">Сохранить</button>
-          </form>
-        </div>
-
+        <h2 class="popup__heading">Редактировать профиль</h2>
+        <form class="popup__form" name="profile-edit">
+          <input type="text" class="popup__input popup__input_data_name" placeholder="Имя"
+            value="Жак-Ив Кусто" name="name" required>
+          <input type="text" class="popup__input popup__input_data_description"
+            placeholder="Деятельность" value="Исследователь океана" name="description" required>
+          <button class="popup__save-button" type="submit">Сохранить</button>
+        </form>
       </div>
     </div>
   </div>
