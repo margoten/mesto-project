@@ -1,7 +1,14 @@
 .place__image {
   display: block;
   object-fit: cover;
+  object-position: 50% 0;
   margin: 0;
   padding: 0;
   width: 100%;
+  aspect-ratio: 1/1;
 }
+
+.place__image:hover {
+    cursor: pointer;
+}
+
