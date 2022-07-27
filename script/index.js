@@ -1,29 +1,3 @@
-const initialCards = [
-  {
-    name: "Архыз",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
-  },
-  {
-    name: "Челябинская область",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg",
-  },
-  {
-    name: "Иваново",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg",
-  },
-  {
-    name: "Камчатка",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg",
-  },
-  {
-    name: "Холмогорский район",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg",
-  },
-  {
-    name: "Байкал",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg",
-  },
-];
 const popupProfile = document.querySelector(".popup_content_profile");
 const popupPlace = document.querySelector(".popup_content_place");
 const popupImage = document.querySelector(".popup_content_image");
@@ -31,52 +5,26 @@ const closeButtons = document.querySelectorAll(".popup__close-button");
 const places = document.querySelector(".places__list");
 const profileNameElement = document.querySelector(".profile__title");
 const profileJobElement = document.querySelector(".profile__description");
-
-closeButtons.forEach((button) => {
-  button.addEventListener("click", () => togglePopup(button.closest(".popup")));
-});
+const imagePopupElement = popupImage.querySelector(".popup__image");
+const captionPopupElement = popupImage.querySelector(".popup__image-caption");
 
 fillDefaultPlaces();
 initProfilePopup();
 initPlacePopup();
 
-const togglePopup = (popup) => popup.classList.toggle("popup_opened");
+const closePopup = (popup) => popup.classList.remove("popup_opened");
+
+const showPopup = (popup) => popup.classList.add("popup_opened");
 
 function fillDefaultPlaces() {
   initialCards.forEach((card) => addPlace(card.name, card.link, places));
 }
 
 const imageElementEvent = (imageElement, popup) => {
-  const imagePopupElement = popup.querySelector(".popup__image");
   imagePopupElement.src = imageElement.src;
   imagePopupElement.atl = imageElement.atl;
-  const captionPopupElement = popup.querySelector(".popup__image-caption");
   captionPopupElement.textContent = imageElement.atl;
-  togglePopup(popup);
-};
-
-const likeButtonEvent = (likeButton) =>
-  likeButton.classList.toggle("place__like-button_active");
-
-const removePlaceEvent = (place) => place.remove();
-
-const editProfileButtonEvent = (popup, nameElement, jobElement) => {
-  nameElement.value = profileNameElement.textContent;
-  jobElement.value = profileJobElement.textContent;
-  togglePopup(popup);
-};
-
-const profileFormSubmitEvent = (popup, nameElement, jobElement) => {
-  profileNameElement.textContent = nameElement.value;
-  profileJobElement.textContent = jobElement.value;
-  togglePopup(popup);
-};
-
-const placeFormSubmitEvent = (popup, nameElement, linkElement) => {
-  addPlace(nameElement.value, linkElement.value, places);
-  togglePopup(popup);
-  nameElement.value = "";
-  linkElement.value = "";
+  showPopup(popup);
 };
 
 function addPlace(name, link, places) {
@@ -127,11 +75,38 @@ function initPlacePopup() {
   const linkElement = popupPlace.querySelector(".popup__input_data_description");
 
   const button = document.querySelector(".profile__add-button");
-  button.addEventListener("click", () => togglePopup(popupPlace));
+  button.addEventListener("click", () => showPopup(popupPlace));
 
   const formElement = popupPlace.querySelector(".popup__form");
   formElement.addEventListener("submit", (evt) => {
     evt.preventDefault();
-    placeFormSubmitEvent(popupPlace, nameElement, linkElement);
+    placeFormSubmitEvent(popupPlace, formElement, nameElement.value, linkElement.value);
   });
 }
+
+closeButtons.forEach((button) => {
+  button.addEventListener("click", () => closePopup(button.closest(".popup")));
+});
+
+const likeButtonEvent = (likeButton) =>
+  likeButton.classList.toggle("place__like-button_active");
+
+const removePlaceEvent = (place) => place.remove();
+
+const editProfileButtonEvent = (popup, nameElement, jobElement) => {
+  nameElement.value = profileNameElement.textContent;
+  jobElement.value = profileJobElement.textContent;
+  showPopup(popup);
+};
+
+const profileFormSubmitEvent = (popup, nameElement, jobElement) => {
+  profileNameElement.textContent = nameElement.value;
+  profileJobElement.textContent = jobElement.value;
+  closePopup(popup);
+};
+
+const placeFormSubmitEvent = (popup, formElement, name, link) => {
+  addPlace(name, link, places);
+  closePopup(popup);
+  formElement.reset();
+};
