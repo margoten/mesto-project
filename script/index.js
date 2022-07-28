@@ -8,10 +8,6 @@ const profileJobElement = document.querySelector(".profile__description");
 const imagePopupElement = popupImage.querySelector(".popup__image");
 const captionPopupElement = popupImage.querySelector(".popup__image-caption");
 
-fillDefaultPlaces();
-initProfilePopup();
-initPlacePopup();
-
 const closePopup = (popup) => popup.classList.remove("popup_opened");
 
 const showPopup = (popup) => popup.classList.add("popup_opened");
@@ -110,3 +106,8 @@ const placeFormSubmitEvent = (popup, formElement, name, link) => {
   closePopup(popup);
   formElement.reset();
 };
+
+fillDefaultPlaces();
+initProfilePopup();
+initPlacePopup();
+
