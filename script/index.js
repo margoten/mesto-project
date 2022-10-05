@@ -107,6 +107,7 @@ const placeFormSubmitEvent = (popup, formElement, name, link) => {
   formElement.reset();
 };
 
+
 fillDefaultPlaces();
 initProfilePopup();
 initPlacePopup();
