@@ -1,3 +1,5 @@
 .popup__input-error {
-  display: block;
+  display: none;
+  padding: 5px 0 0;
+  box-sizing: border-box;
 }

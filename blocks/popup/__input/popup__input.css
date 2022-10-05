@@ -10,12 +10,11 @@
   line-height: 17px;
   color: #000;
   width: 100%;
-  margin: 0 0 29px;
 }
 
 .popup__input:focus {
   outline-width: 0;
-  outline-color: #00000033;
+  outline-color: #00aa0033;
 }
 
 .popup__input::placeholder {
