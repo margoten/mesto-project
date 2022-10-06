@@ -1,12 +1,15 @@
 import { addPlace } from "./card.js";
 
+
 const popupProfile = document.querySelector(".popup_content_profile");
 const popupPlace = document.querySelector(".popup_content_place");
 const closeButtons = document.querySelectorAll(".popup__close-button");
 const profileNameElement = document.querySelector(".profile__title");
 const profileJobElement = document.querySelector(".profile__description");
 
-export const closePopup = (popup) => popup.classList.remove("popup_opened");
+export const closePopup = (popup) => {
+  popup.classList.remove("popup_opened");
+};
 
 export const showPopup = (popup) => popup.classList.add("popup_opened");
 
@@ -15,6 +18,8 @@ export const initPopupEvets = () => {
     if (evt.key == "Escape") {
       document.querySelectorAll(".popup_opened").forEach((popup) => {
         closePopup(popup);
+        const formElement = popup.querySelector(".popup__form");
+        formElement.reset();
       });
     }
   });
@@ -22,11 +27,15 @@ export const initPopupEvets = () => {
   document.querySelectorAll(".popup_content").forEach((popup) => {
     popup.addEventListener("click", function (evt) {
       evt.stopPropagation();
+      const formElement = popup.querySelector(".popup__form");
+      formElement.reset();
     });
   });
   document.querySelectorAll(".popup").forEach((popup) => {
     popup.addEventListener("click", function (evt) {
       closePopup(popup);
+      const formElement = popup.querySelector(".popup__form");
+      formElement.reset();
     });
   });
 };
@@ -70,7 +79,6 @@ export function initPlacePopup() {
   });
 }
 
-
 const editProfileButtonEvent = (popup, nameElement, jobElement) => {
   nameElement.value = profileNameElement.textContent;
   jobElement.value = profileJobElement.textContent;
@@ -87,9 +95,7 @@ const placeFormSubmitEvent = (popup, formElement, name, link) => {
   addPlace(name, link, places);
   closePopup(popup);
   formElement.reset();
-  formElement.resetForm();
 };
-
 
 closeButtons.forEach((button) => {
   button.addEventListener("click", () => closePopup(button.closest(".popup")));

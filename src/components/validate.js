@@ -1,3 +1,5 @@
+import { closePopup } from "./modal.js";
+
 let validationInfo;
 
 const showInputError = (formElement, inputElement, errorMessage) => {
@@ -50,7 +52,7 @@ const setEventListeners = (formElement) => {
     validationInfo.submitButtonSelector
   );
   inputList.forEach((inputElement) => {
-    inputElement.addEventListener("input", function () {
+    inputElement.addEventListener("input", () => {
       checkInputValidity(formElement, inputElement);
       toggleButtonState(inputList, buttonElement);
     });
@@ -58,15 +60,34 @@ const setEventListeners = (formElement) => {
   toggleButtonState(inputList, buttonElement);
 };
 
-export const enableValidation = (validationInfo) => {
-  validationInfo = validationInfo;
+const clerAllErrors = ((formElement) => {
+  const inputList = Array.from(
+    formElement.querySelectorAll(validationInfo.inputSelector)
+  );
+  const buttonElement = formElement.querySelector(
+    validationInfo.submitButtonSelector
+  );
+
+  inputList.forEach((inputElement) => {
+    hideInputError(formElement, inputElement);
+  });
+  toggleButtonState(inputList, buttonElement);
+});
+
+export const enableValidation = (obj) => {
+  validationInfo = obj;
   const formList = Array.from(
     document.querySelectorAll(validationInfo.formSelector)
   );
   formList.forEach((formElement) => {
-    formElement.addEventListener("submit", function (evt) {
+    console.log(formElement);
+    formElement.addEventListener("submit", evt => {
       evt.preventDefault();
     });
+
+    formElement.addEventListener("reset", evt => {
+      clerAllErrors(evt.target);
+    })
 
     setEventListeners(formElement);
   });
