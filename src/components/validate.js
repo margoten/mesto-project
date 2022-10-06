@@ -1,5 +1,3 @@
-import { closePopup } from "./modal.js";
-
 let validationInfo;
 
 const showInputError = (formElement, inputElement, errorMessage) => {
@@ -60,7 +58,7 @@ const setEventListeners = (formElement) => {
   toggleButtonState(inputList, buttonElement);
 };
 
-const clerAllErrors = ((formElement) => {
+const clearAllErrors = ((formElement) => {
   const inputList = Array.from(
     formElement.querySelectorAll(validationInfo.inputSelector)
   );
@@ -86,7 +84,7 @@ export const enableValidation = (obj) => {
     });
 
     formElement.addEventListener("reset", evt => {
-      clerAllErrors(evt.target);
+      clearAllErrors(evt.target);
     })
 
     setEventListeners(formElement);

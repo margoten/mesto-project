@@ -2,11 +2,11 @@ import { showPopup } from "./modal.js";
 import { initialCards } from "./constants.js";
 let imageElements;
 
-function fillDefaultPlaces(popupImage) {
+const fillDefaultPlaces = (popupImage) => {
   initialCards.forEach((card) => addPlace(card.name, card.link, popupImage));
 }
 
-export function addPlace(name, link, places) {
+export const addPlace = (name, link, places) => {
   const place = createNewPlace(name, link);
   places.prepend(place);
 }
@@ -23,12 +23,19 @@ const likeButtonEvent = (likeButton) =>
 
 const removePlaceEvent = (place) => place.remove();
 
-function createNewPlace(nameValue, urlValue) {
-  const placeTemplate = document.querySelector(imageElements.placeTemplate).content;
+const createNewPlace = (nameValue, urlValue) => {
+  const placeTemplate = document.querySelector(
+    imageElements.placeTemplate
+  ).content;
 
-  const placeElement = placeTemplate.querySelector(imageElements.placeSelector).cloneNode(true);
-  placeElement.querySelector(imageElements.placeNameSelector).textContent = nameValue;
-  const imageElement = placeElement.querySelector(imageElements.placeImageSelector);
+  const placeElement = placeTemplate
+    .querySelector(imageElements.placeSelector)
+    .cloneNode(true);
+  placeElement.querySelector(imageElements.placeNameSelector).textContent =
+    nameValue;
+  const imageElement = placeElement.querySelector(
+    imageElements.placeImageSelector
+  );
   imageElement.src = urlValue;
   imageElement.atl = nameValue;
 
@@ -40,10 +47,14 @@ function createNewPlace(nameValue, urlValue) {
     );
   });
 
-  const removeButton = placeElement.querySelector(imageElements.removeButtonSelector);
+  const removeButton = placeElement.querySelector(
+    imageElements.removeButtonSelector
+  );
   removeButton.addEventListener("click", () => removePlaceEvent(placeElement));
 
-  const likeButton = placeElement.querySelector(imageElements.likeButtonSelector);
+  const likeButton = placeElement.querySelector(
+    imageElements.likeButtonSelector
+  );
   likeButton.addEventListener("click", () => likeButtonEvent(likeButton));
 
   return placeElement;
@@ -64,7 +75,7 @@ export const enableCards = (obj) => {
     placeTemplate: obj.placeTemplate,
     placeSelector: obj.placeSelector,
     placeNameSelector: obj.placeNameSelector,
-    placeImageSelector: obj.placeImageSelector
+    placeImageSelector: obj.placeImageSelector,
   };
   fillDefaultPlaces(places);
 };

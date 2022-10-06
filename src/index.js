@@ -1,7 +1,7 @@
 import './pages/index.css'
-import { initPopupEvets, initPlacePopup, initProfilePopup } from "./components/modal.js";
 import { enableCards } from "./components/card.js";
 import { enableValidation } from "./components/validate.js";
+import {enableModal} from "./components/modal.js";
 
 
 
@@ -20,9 +20,21 @@ enableCards({
   placeImageSelector: ".place__image"
 });
 
-initProfilePopup();
-initPlacePopup();
-initPopupEvets();
+enableModal({
+  inputDataNameSelector: ".popup__input_data_name",
+  inputDataDescrSelector: ".popup__input_data_description",
+  profileEditButtonSelector: ".profile__edit-button",
+  profileAddButtonSelector: ".profile__add-button",
+  formSelector: ".popup__form",
+  popupSelector: ".popup",
+  openPopupClass: "popup_opened",
+  popupContentSelector: ".popup_content",
+  popupProfileSelector: ".popup_content_profile",
+  popupPlaceSelector: ".popup_content_place",
+  profileNameSelector: ".profile__title",
+  profileJobSelector: ".profile__description",
+  popupCloseButton: ".popup__close-button",
+});
 
 enableValidation({
   formSelector: ".popup__form",

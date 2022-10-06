@@ -1,3 +1,4 @@
 .popup__form-field {
-  margin: 0 0 29px;
+  margin: 0 0 30px;
+  position: relative;
 }

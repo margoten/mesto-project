@@ -1,73 +1,108 @@
 import { addPlace } from "./card.js";
 
+let popupSelectors;
 
-const popupProfile = document.querySelector(".popup_content_profile");
-const popupPlace = document.querySelector(".popup_content_place");
-const closeButtons = document.querySelectorAll(".popup__close-button");
-const profileNameElement = document.querySelector(".profile__title");
-const profileJobElement = document.querySelector(".profile__description");
-
-export const closePopup = (popup) => {
-  popup.classList.remove("popup_opened");
+function keyDownPopupListener (evt) {
+  if (evt.key === "Escape") {
+    closePopup(popup);
+  }
 };
 
-export const showPopup = (popup) => popup.classList.add("popup_opened");
+const closePopup = (popup) => {
+  popup.classList.remove(popupSelectors.openPopupClass);
+  popup.removeEventListener("keydown", keyDownPopupListener);
+  const formElement = popup.querySelector(popupSelectors.formSelector);
+  if (formElement) {
+    formElement.reset();
+  }
+};
+
+export const showPopup = (popup) => {
+  popup.classList.add(popupSelectors.openPopupClass);
+  popup.addEventListener("keydown", keyDownPopupListener);
+};
 
 export const initPopupEvets = () => {
-  document.body.addEventListener("keydown", function (evt) {
-    if (evt.key == "Escape") {
-      document.querySelectorAll(".popup_opened").forEach((popup) => {
-        closePopup(popup);
-        const formElement = popup.querySelector(".popup__form");
-        formElement.reset();
-      });
-    }
-  });
+  // document.body.addEventListener("keydown", (evt) => {
+  //   if (evt.key == "Escape") {
+  //     document
+  //       .querySelectorAll(popupSelectors.openPopupClass)
+  //       .forEach((popup) => {
+  //         closePopup(popup);
+  //       });
+  //   }
+  // });
 
-  document.querySelectorAll(".popup_content").forEach((popup) => {
-    popup.addEventListener("click", function (evt) {
-      evt.stopPropagation();
-      const formElement = popup.querySelector(".popup__form");
-      formElement.reset();
+  document
+    .querySelectorAll(popupSelectors.popupContentSelector)
+    .forEach((popup) => {
+      popup.addEventListener("click", (evt) => {
+        evt.stopPropagation();
+      });
     });
-  });
-  document.querySelectorAll(".popup").forEach((popup) => {
-    popup.addEventListener("click", function (evt) {
+  document.querySelectorAll(popupSelectors.popupSelector).forEach((popup) => {
+    popup.addEventListener("click", () => {
       closePopup(popup);
-      const formElement = popup.querySelector(".popup__form");
-      formElement.reset();
     });
   });
 };
 
-export function initProfilePopup() {
-  const nameElement = popupProfile.querySelector(".popup__input_data_name");
+const initProfilePopup = (
+  popupProfileSelector,
+  profileNameSelector,
+  profileJobSelector
+) => {
+  const popupProfile = document.querySelector(popupProfileSelector);
+  const profileNameElement = document.querySelector(profileNameSelector);
+  const profileJobElement = document.querySelector(profileJobSelector);
+  const nameElement = popupProfile.querySelector(
+    popupSelectors.inputDataNameSelector
+  );
   const jobElement = popupProfile.querySelector(
-    ".popup__input_data_description"
+    popupSelectors.inputDataDescrSelector
   );
 
-  const button = document.querySelector(".profile__edit-button");
+  const button = document.querySelector(
+    popupSelectors.profileEditButtonSelector
+  );
   button.addEventListener("click", () =>
-    editProfileButtonEvent(popupProfile, nameElement, jobElement)
+    editProfileButtonEvent(
+      popupProfile,
+      nameElement,
+      jobElement,
+      profileNameElement,
+      profileJobElement
+    )
   );
 
-  const formElement = popupProfile.querySelector(".popup__form");
+  const formElement = popupProfile.querySelector(popupSelectors.formSelector);
   formElement.addEventListener("submit", (evt) => {
     evt.preventDefault();
-    profileFormSubmitEvent(popupProfile, nameElement, jobElement);
+    profileFormSubmitEvent(
+      popupProfile,
+      nameElement,
+      jobElement,
+      profileNameElement,
+      profileJobElement
+    );
   });
-}
+};
 
-export function initPlacePopup() {
-  const nameElement = popupPlace.querySelector(".popup__input_data_name");
+const initPlacePopup = (popupPlaceSelector) => {
+  const popupPlace = document.querySelector(popupPlaceSelector);
+  const nameElement = popupPlace.querySelector(
+    popupSelectors.inputDataNameSelector
+  );
   const linkElement = popupPlace.querySelector(
-    ".popup__input_data_description"
+    popupSelectors.inputDataDescrSelector
   );
 
-  const button = document.querySelector(".profile__add-button");
+  const button = document.querySelector(
+    popupSelectors.profileAddButtonSelector
+  );
   button.addEventListener("click", () => showPopup(popupPlace));
 
-  const formElement = popupPlace.querySelector(".popup__form");
+  const formElement = popupPlace.querySelector(popupSelectors.formSelector);
   formElement.addEventListener("submit", (evt) => {
     evt.preventDefault();
     placeFormSubmitEvent(
@@ -77,15 +112,27 @@ export function initPlacePopup() {
       linkElement.value
     );
   });
-}
+};
 
-const editProfileButtonEvent = (popup, nameElement, jobElement) => {
+const editProfileButtonEvent = (
+  popup,
+  nameElement,
+  jobElement,
+  profileNameElement,
+  profileJobElement
+) => {
   nameElement.value = profileNameElement.textContent;
   jobElement.value = profileJobElement.textContent;
   showPopup(popup);
 };
 
-const profileFormSubmitEvent = (popup, nameElement, jobElement) => {
+const profileFormSubmitEvent = (
+  popup,
+  nameElement,
+  jobElement,
+  profileNameElement,
+  profileJobElement
+) => {
   profileNameElement.textContent = nameElement.value;
   profileJobElement.textContent = jobElement.value;
   closePopup(popup);
@@ -97,6 +144,21 @@ const placeFormSubmitEvent = (popup, formElement, name, link) => {
   formElement.reset();
 };
 
-closeButtons.forEach((button) => {
-  button.addEventListener("click", () => closePopup(button.closest(".popup")));
-});
+export const enableModal = (obj) => {
+  popupSelectors = obj;
+  initProfilePopup(
+    popupSelectors.popupProfileSelector,
+    popupSelectors.profileNameSelector,
+    popupSelectors.profileJobSelector
+  );
+  initPlacePopup(popupSelectors.popupPlaceSelector);
+  const closeButtons = document.querySelectorAll(
+    popupSelectors.popupCloseButton
+  );
+  closeButtons.forEach((button) => {
+    button.addEventListener("click", () =>
+      closePopup(button.closest(popupSelectors.popupSelector))
+    );
+  });
+  initPopupEvets();
+};
