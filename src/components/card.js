@@ -2,14 +2,6 @@ import { showPopup } from "./modal.js";
 import { initialCards } from "./constants.js";
 let imageElements;
 
-const fillDefaultPlaces = (popupImage) => {
-  initialCards.forEach((card) => addPlace(card.name, card.link, popupImage));
-}
-
-export const addPlace = (name, link, places) => {
-  const place = createNewPlace(name, link);
-  places.prepend(place);
-}
 
 const imageElementEvent = (imageElement, imagePopupElement, popup) => {
   imagePopupElement.src = imageElement.src;
@@ -59,6 +51,16 @@ const createNewPlace = (nameValue, urlValue) => {
 
   return placeElement;
 }
+
+export const addPlace = (name, link, places) => {
+  const place = createNewPlace(name, link);
+  places.prepend(place);
+}
+
+const fillDefaultPlaces = (popupImage) => {
+  initialCards.forEach((card) => addPlace(card.name, card.link, popupImage));
+}
+
 
 export const enableCards = (obj) => {
   const places = document.querySelector(obj.placesSelector);

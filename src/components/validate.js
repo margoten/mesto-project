@@ -2,16 +2,17 @@ let validationInfo;
 
 const showInputError = (formElement, inputElement, errorMessage) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  inputElement.classList.add(validationInfo.inputErrorClass);
   errorElement.textContent = errorMessage;
   errorElement.classList.add(validationInfo.errorClass);
+  inputElement.classList.add(validationInfo.inputErrorClass);
 };
 
 const hideInputError = (formElement, inputElement) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-  inputElement.classList.remove(validationInfo.inputErrorClass);
   errorElement.classList.remove(validationInfo.errorClass);
   errorElement.textContent = "";
+  inputElement.classList.remove(validationInfo.inputErrorClass);
+
 };
 
 const checkInputValidity = (formElement, inputElement) => {
@@ -33,6 +34,7 @@ const hasInvalidInput = (inputList) => {
 };
 
 const toggleButtonState = (inputList, buttonElement) => {
+  console.log(hasInvalidInput(inputList));
   if (hasInvalidInput(inputList)) {
     buttonElement.disabled = true;
     buttonElement.classList.add(validationInfo.inactiveButtonClass);
@@ -58,7 +60,7 @@ const setEventListeners = (formElement) => {
   toggleButtonState(inputList, buttonElement);
 };
 
-const clearAllErrors = ((formElement) => {
+export const resetFormStates = ((formElement) => {
   const inputList = Array.from(
     formElement.querySelectorAll(validationInfo.inputSelector)
   );
@@ -84,7 +86,7 @@ export const enableValidation = (obj) => {
     });
 
     formElement.addEventListener("reset", evt => {
-      clearAllErrors(evt.target);
+      resetFormStates(evt.target);
     })
 
     setEventListeners(formElement);
