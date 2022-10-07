@@ -14,12 +14,16 @@
   height: 50px;
   margin: 18px 0 0;
   width: 100%;
-
+ transition: background-color 0.3s;
 }
 
 .popup__save-button:hover {
   opacity: 0.8;
   cursor: pointer;
+}
+
+.popup__save-button:disabled:hover {
+  cursor: default;
 }
 
 @media screen and (max-width: 767px) {
