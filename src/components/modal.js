@@ -1,43 +1,38 @@
-let modalInfo;
+const openPopupClass = "popup_opened"; 
 
-function keyDownPopupListener(evt) {
+function handleEscapeKeyDownListener(evt) {
   if (evt.key === "Escape") {
-    const popup = document.querySelector(`.${modalInfo.openPopupClass}`);
+    const popup = document.querySelector(`.${openPopupClass}`);
     closePopup(popup);
   }
 }
 
-function clickPopupListener(evt) {
+function hanleOverlayListener(evt) {
   closePopup(evt.target);
 }
 
 export const closePopup = (popup) => {
-  popup.classList.remove(modalInfo.openPopupClass);
-  document.body.removeEventListener("keydown", keyDownPopupListener);
-  popup.removeEventListener("click", clickPopupListener);
-  const formElement = popup.querySelector(modalInfo.formSelector);
-  if (formElement) {
-    formElement.reset();
-  }
+  popup.classList.remove(openPopupClass);
+  document.body.removeEventListener("keydown", handleEscapeKeyDownListener);
+  popup.removeEventListener("mousedown", hanleOverlayListener);
 };
 
 export const showPopup = (popup) => {
-  popup.classList.add(modalInfo.openPopupClass);
-  document.body.addEventListener("keydown", keyDownPopupListener);
-  popup.addEventListener("click", clickPopupListener);
+  popup.classList.add(openPopupClass);
+  document.body.addEventListener("keydown", handleEscapeKeyDownListener);
+  popup.addEventListener("mousedown", hanleOverlayListener);
 };
 
 export const enableModal = (obj) => {
-  modalInfo = obj;
-  const closeButtons = document.querySelectorAll(modalInfo.popupCloseButton);
+  const closeButtons = document.querySelectorAll(obj.popupCloseButton);
   closeButtons.forEach((button) => {
     button.addEventListener("click", () =>
-      closePopup(button.closest(modalInfo.popupSelector))
+      closePopup(button.closest(obj.popupSelector))
     );
   });
 
   document
-    .querySelectorAll(modalInfo.popupContentSelector)
+    .querySelectorAll(obj.popupContentSelector)
     .forEach((content) => {
       content.addEventListener("click", (evt) => {
         evt.stopPropagation();

@@ -1,57 +1,82 @@
 import { showPopup } from "./modal.js";
-let cardInfo;
+const activeLikeButtonClass = "place__like-button_active";
+const popupImage = document.querySelector(".popup_content_image");
+const captionElement = popupImage.querySelector(".popup__image-caption");
+const fullImageElement = popupImage.querySelector(".popup__image");
 
-const imageElementEvent = (imageElement, imagePopupElement, popup) => {
+const openImage = (imageElement, imagePopupElement, popup) => {
   imagePopupElement.src = imageElement.src;
   imagePopupElement.alt = imageElement.alt;
-  const popupImage = document.querySelector(cardInfo.popupImageSelector);
-  const captionElement = popupImage.querySelector(cardInfo.captionSelector);
   captionElement.textContent = imageElement.alt;
   showPopup(popup);
 };
 
-const likeButtonEvent = (likeButton) =>
-  likeButton.classList.toggle(cardInfo.activeLikeButtonClass);
+const toggleLike = (likeButton) =>
+  likeButton.classList.toggle(activeLikeButtonClass);
 
-const removePlaceEvent = (place) => place.remove();
+const removeCard = (card) => card.remove();
 
-const createNewPlace = (nameValue, urlValue) => {
-  const placeTemplate = document.querySelector(cardInfo.placeTemplate).content;
-
-  const placeElement = placeTemplate
-    .querySelector(cardInfo.placeSelector)
+const createNewPlace = (
+  nameValue,
+  urlValue,
+  placeTemplate,
+  placeSelector,
+  placeNameSelector,
+  placeImageSelector,
+  removeButtonSelector,
+  likeButtonSelector
+) => {
+  console.log(
+    nameValue,
+    urlValue,
+    placeTemplate,
+    placeSelector,
+    placeNameSelector,
+    placeImageSelector,
+    removeButtonSelector,
+    likeButtonSelector
+  );
+  const placeElement = placeTemplate.content
+    .querySelector(placeSelector)
     .cloneNode(true);
-  placeElement.querySelector(cardInfo.placeNameSelector).textContent =
-    nameValue;
-  const imageElement = placeElement.querySelector(cardInfo.placeImageSelector);
+  placeElement.querySelector(placeNameSelector).textContent = nameValue;
+  const imageElement = placeElement.querySelector(placeImageSelector);
   imageElement.src = urlValue;
   imageElement.alt = nameValue;
 
   imageElement.addEventListener("click", () => {
-    const popupImage = document.querySelector(cardInfo.popupImageSelector);
-    const fullImageElement = popupImage.querySelector(
-      cardInfo.fullImageSelector
-    );
-
-    imageElementEvent(imageElement, fullImageElement, popupImage);
+    openImage(imageElement, fullImageElement, popupImage);
   });
 
-  const removeButton = placeElement.querySelector(
-    cardInfo.removeButtonSelector
-  );
-  removeButton.addEventListener("click", () => removePlaceEvent(placeElement));
+  const removeButton = placeElement.querySelector(removeButtonSelector);
+  removeButton.addEventListener("click", () => removeCard(placeElement));
 
-  const likeButton = placeElement.querySelector(cardInfo.likeButtonSelector);
-  likeButton.addEventListener("click", () => likeButtonEvent(likeButton));
+  const likeButton = placeElement.querySelector(likeButtonSelector);
+  likeButton.addEventListener("click", () => toggleLike(likeButton));
 
   return placeElement;
 };
 
-export const addPlace = (name, link, places) => {
-  const place = createNewPlace(name, link);
+export const addPlace = (
+  name,
+  link,
+  places,
+  placeTemplate,
+  placeSelector,
+  placeNameSelector,
+  placeImageSelector,
+  removeButtonSelector,
+  likeButtonSelector
+) => {
+  const place = createNewPlace(
+    name,
+    link,
+    placeTemplate,
+    placeSelector,
+    placeNameSelector,
+    placeImageSelector,
+    removeButtonSelector,
+    likeButtonSelector
+  );
   places.prepend(place);
-};
-
-export const enableCards = (obj) => {
-  cardInfo = obj;
 };

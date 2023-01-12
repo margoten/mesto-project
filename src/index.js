@@ -1,6 +1,6 @@
 import "./pages/index.css";
 import { initialCards } from "./components/constants.js";
-import { enableCards, addPlace } from "./components/card.js";
+import { addPlace } from "./components/card.js";
 import { enableValidation, resetFormStates } from "./components/validate.js";
 import { enableModal, showPopup, closePopup } from "./components/modal.js";
 
@@ -21,11 +21,30 @@ const placeLinkElement = popupPlace.querySelector(
 const profileAddButton = document.querySelector(".profile__add-button");
 const placeFormElement = popupPlace.querySelector(".popup__form");
 
+const placeTemplate = document.querySelector("#create_place");
+const removeButtonSelector = ".place__remove-button";
+const likeButtonSelector = ".place__like-button";
+const placeNameSelector = ".place__name";
+const placeImageSelector = ".place__image";
+const placeSelector = ".place";
+
 const fillDefaultPlaces = () => {
-  initialCards.forEach((card) => addPlace(card.name, card.link, imagePlaces));
+  initialCards.forEach((card) =>
+    addPlace(
+      card.name,
+      card.link,
+      imagePlaces,
+      placeTemplate,
+      placeSelector,
+      placeNameSelector,
+      placeImageSelector,
+      removeButtonSelector,
+      likeButtonSelector
+    )
+  );
 };
 
-const editProfileButtonEvent = (
+const openProfilePopupEvent = (
   popup,
   nameElement,
   jobElement,
@@ -35,11 +54,11 @@ const editProfileButtonEvent = (
 ) => {
   nameElement.value = profileNameElement.textContent;
   jobElement.value = profileJobElement.textContent;
-  resetFormStates(formElement);
+  // resetFormStates(formElement);
   showPopup(popup);
 };
 
-const profileFormSubmitEvent = (
+const handleProfileFormSubmitEvent = (
   popup,
   nameElement,
   jobElement,
@@ -51,15 +70,25 @@ const profileFormSubmitEvent = (
   closePopup(popup);
 };
 
-const placeFormSubmitEvent = (popup, formElement, places, name, link) => {
-  addPlace(name, link, places);
+const handlePlaceFormSubmitEvent = (popup, formElement, places, name, link) => {
+  addPlace(
+    name,
+    link,
+    places,
+    placeTemplate,
+    placeSelector,
+    placeNameSelector,
+    placeImageSelector,
+    removeButtonSelector,
+    likeButtonSelector
+  );
   closePopup(popup);
   formElement.reset();
 };
 
 const initProfilePopup = () => {
   profileEditButton.addEventListener("click", () =>
-    editProfileButtonEvent(
+    openProfilePopupEvent(
       popupProfile,
       nameElement,
       jobElement,
@@ -70,7 +99,7 @@ const initProfilePopup = () => {
   );
 
   profileFormElement.addEventListener("submit", () => {
-    profileFormSubmitEvent(
+    handleProfileFormSubmitEvent(
       popupProfile,
       nameElement,
       jobElement,
@@ -84,7 +113,7 @@ const initPlacePopup = () => {
   profileAddButton.addEventListener("click", () => showPopup(popupPlace));
 
   placeFormElement.addEventListener("submit", () => {
-    placeFormSubmitEvent(
+    handlePlaceFormSubmitEvent(
       popupPlace,
       placeFormElement,
       imagePlaces,
@@ -93,19 +122,6 @@ const initPlacePopup = () => {
     );
   });
 };
-
-enableCards({
-  popupImageSelector: ".popup_content_image",
-  fullImageSelector: ".popup__image",
-  captionSelector: ".popup__image-caption",
-  likeButtonSelector: ".place__like-button",
-  activeLikeButtonClass: "place__like-button_active",
-  removeButtonSelector: ".place__remove-button",
-  placeTemplate: "#create_place",
-  placeSelector: ".place",
-  placeNameSelector: ".place__name",
-  placeImageSelector: ".place__image",
-});
 
 enableModal({
   formSelector: ".popup__form",
