@@ -1,46 +1,41 @@
-let modalInfo;
+const openPopupClass = "popup_opened";
 
-function keyDownPopupListener(evt) {
+function handleEscapeKeyDownListener(evt) {
   if (evt.key === "Escape") {
-    const popup = document.querySelector(`.${modalInfo.openPopupClass}`);
+    const popup = document.querySelector(`.${openPopupClass}`);
     closePopup(popup);
   }
 }
 
-function clickPopupListener(evt) {
-  closePopup(evt.target);
-}
-
 export const closePopup = (popup) => {
-  popup.classList.remove(modalInfo.openPopupClass);
-  document.body.removeEventListener("keydown", keyDownPopupListener);
-  popup.removeEventListener("click", clickPopupListener);
-  const formElement = popup.querySelector(modalInfo.formSelector);
-  if (formElement) {
-    formElement.reset();
-  }
+  popup.classList.remove(openPopupClass);
+  document.body.removeEventListener("keydown", handleEscapeKeyDownListener);
 };
 
 export const showPopup = (popup) => {
-  popup.classList.add(modalInfo.openPopupClass);
-  document.body.addEventListener("keydown", keyDownPopupListener);
-  popup.addEventListener("click", clickPopupListener);
+  popup.classList.add(openPopupClass);
+  document.body.addEventListener("keydown", handleEscapeKeyDownListener);
 };
 
-export const enableModal = (obj) => {
-  modalInfo = obj;
-  const closeButtons = document.querySelectorAll(modalInfo.popupCloseButton);
-  closeButtons.forEach((button) => {
-    button.addEventListener("click", () =>
-      closePopup(button.closest(modalInfo.popupSelector))
-    );
-  });
+export const enableModal = () => {
+  const popupClass = "popup";
+  const popupContentSelector = ".popup_content";
+  const popupCloseButtonClass = "popup__close-button";
+  const popups = document.querySelectorAll(`.${popupClass}`);
+  popups.forEach((popup) =>
+    popup.addEventListener("mousedown", (evt) => {
+      if (
+        evt.target.classList.contains(popupClass) ||
+        evt.target.classList.contains(popupCloseButtonClass)
+      ) {
+        closePopup(popup);
+      }
+    })
+  );
 
-  document
-    .querySelectorAll(modalInfo.popupContentSelector)
-    .forEach((content) => {
-      content.addEventListener("click", (evt) => {
-        evt.stopPropagation();
-      });
+  document.querySelectorAll(popupContentSelector).forEach((content) => {
+    content.addEventListener("click", (evt) => {
+      evt.stopPropagation();
     });
+  });
 };
