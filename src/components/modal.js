@@ -32,10 +32,4 @@ export const enableModal = () => {
       }
     })
   );
-
-  document.querySelectorAll(popupContentSelector).forEach((content) => {
-    content.addEventListener("click", (evt) => {
-      evt.stopPropagation();
-    });
-  });
 };
