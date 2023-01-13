@@ -112,7 +112,9 @@ export const resetFormStates = (
     const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
     hideInputError(errorElement, inputElement, errorClass, inputErrorClass);
   });
-  toggleButtonState(inputList, buttonElement, inactiveButtonClass);
+  setTimeout(() => {
+    toggleButtonState(inputList, buttonElement, inactiveButtonClass);
+  }, 0);
 };
 
 export const enableValidation = (obj) => {
