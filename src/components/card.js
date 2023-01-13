@@ -3,6 +3,12 @@ const activeLikeButtonClass = "place__like-button_active";
 const popupImage = document.querySelector(".popup_content_image");
 const captionElement = popupImage.querySelector(".popup__image-caption");
 const fullImageElement = popupImage.querySelector(".popup__image");
+const placeTemplate = document.querySelector("#create_place");
+const removeButtonSelector = ".place__remove-button";
+const likeButtonSelector = ".place__like-button";
+const placeNameSelector = ".place__name";
+const placeImageSelector = ".place__image";
+const placeSelector = ".place";
 
 const openImage = (imageElement, imagePopupElement, popup) => {
   imagePopupElement.src = imageElement.src;
@@ -16,26 +22,7 @@ const toggleLike = (likeButton) =>
 
 const removeCard = (card) => card.remove();
 
-const createNewPlace = (
-  nameValue,
-  urlValue,
-  placeTemplate,
-  placeSelector,
-  placeNameSelector,
-  placeImageSelector,
-  removeButtonSelector,
-  likeButtonSelector
-) => {
-  console.log(
-    nameValue,
-    urlValue,
-    placeTemplate,
-    placeSelector,
-    placeNameSelector,
-    placeImageSelector,
-    removeButtonSelector,
-    likeButtonSelector
-  );
+const createNewPlace = (nameValue, urlValue) => {
   const placeElement = placeTemplate.content
     .querySelector(placeSelector)
     .cloneNode(true);
@@ -57,26 +44,7 @@ const createNewPlace = (
   return placeElement;
 };
 
-export const addPlace = (
-  name,
-  link,
-  places,
-  placeTemplate,
-  placeSelector,
-  placeNameSelector,
-  placeImageSelector,
-  removeButtonSelector,
-  likeButtonSelector
-) => {
-  const place = createNewPlace(
-    name,
-    link,
-    placeTemplate,
-    placeSelector,
-    placeNameSelector,
-    placeImageSelector,
-    removeButtonSelector,
-    likeButtonSelector
-  );
+export const addPlace = (name, link, places) => {
+  const place = createNewPlace(name, link);
   places.prepend(place);
 };

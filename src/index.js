@@ -1,17 +1,15 @@
 import "./pages/index.css";
 import { initialCards } from "./components/constants.js";
 import { addPlace } from "./components/card.js";
-import { enableValidation, resetFormStates } from "./components/validate.js";
+import { enableValidation, resetFormStates} from "./components/validate.js";
 import { enableModal, showPopup, closePopup } from "./components/modal.js";
 
-const imagePlaces = document.querySelector(".places__list");
 const popupProfile = document.querySelector(".popup_content_profile");
 const profileNameElement = document.querySelector(".profile__title");
 const profileJobElement = document.querySelector(".profile__description");
 const nameElement = popupProfile.querySelector(".popup__input_data_name");
 const jobElement = popupProfile.querySelector(".popup__input_data_description");
 const profileEditButton = document.querySelector(".profile__edit-button");
-const profileFormElement = popupProfile.querySelector(".popup__form");
 
 const popupPlace = document.querySelector(".popup_content_place");
 const placeNameElement = popupPlace.querySelector(".popup__input_data_name");
@@ -19,46 +17,29 @@ const placeLinkElement = popupPlace.querySelector(
   ".popup__input_data_description"
 );
 const profileAddButton = document.querySelector(".profile__add-button");
-const placeFormElement = popupPlace.querySelector(".popup__form");
+const formNewPlace = document.forms.newPlace;
+const formEditProfile = document.forms.profileEdit;
 
-const placeTemplate = document.querySelector("#create_place");
-const removeButtonSelector = ".place__remove-button";
-const likeButtonSelector = ".place__like-button";
-const placeNameSelector = ".place__name";
-const placeImageSelector = ".place__image";
-const placeSelector = ".place";
+const imagePlaces = document.querySelector(".places__list");
 
 const fillDefaultPlaces = () => {
-  initialCards.forEach((card) =>
-    addPlace(
-      card.name,
-      card.link,
-      imagePlaces,
-      placeTemplate,
-      placeSelector,
-      placeNameSelector,
-      placeImageSelector,
-      removeButtonSelector,
-      likeButtonSelector
-    )
-  );
+  initialCards.forEach((card) => addPlace(card.name, card.link, imagePlaces));
 };
 
-const openProfilePopupEvent = (
+const openProfilePopup = (
   popup,
   nameElement,
   jobElement,
   profileNameElement,
-  profileJobElement,
-  formElement
+  profileJobElement
 ) => {
+  formEditProfile.reset();
   nameElement.value = profileNameElement.textContent;
   jobElement.value = profileJobElement.textContent;
-  // resetFormStates(formElement);
   showPopup(popup);
 };
 
-const handleProfileFormSubmitEvent = (
+const handleProfileFormSubmit = (
   popup,
   nameElement,
   jobElement,
@@ -70,36 +51,26 @@ const handleProfileFormSubmitEvent = (
   closePopup(popup);
 };
 
-const handlePlaceFormSubmitEvent = (popup, formElement, places, name, link) => {
-  addPlace(
-    name,
-    link,
-    places,
-    placeTemplate,
-    placeSelector,
-    placeNameSelector,
-    placeImageSelector,
-    removeButtonSelector,
-    likeButtonSelector
-  );
+const handlePlaceFormSubmit = (popup, formElement, places, name, link) => {
+  addPlace(name, link, places);
   closePopup(popup);
   formElement.reset();
 };
 
 const initProfilePopup = () => {
   profileEditButton.addEventListener("click", () =>
-    openProfilePopupEvent(
+    openProfilePopup(
       popupProfile,
       nameElement,
       jobElement,
       profileNameElement,
       profileJobElement,
-      profileFormElement
+      formEditProfile
     )
   );
 
-  profileFormElement.addEventListener("submit", () => {
-    handleProfileFormSubmitEvent(
+  formEditProfile.addEventListener("submit", () => {
+    handleProfileFormSubmit(
       popupProfile,
       nameElement,
       jobElement,
@@ -112,10 +83,10 @@ const initProfilePopup = () => {
 const initPlacePopup = () => {
   profileAddButton.addEventListener("click", () => showPopup(popupPlace));
 
-  placeFormElement.addEventListener("submit", () => {
-    handlePlaceFormSubmitEvent(
+  formNewPlace.addEventListener("submit", () => {
+    handlePlaceFormSubmit(
       popupPlace,
-      placeFormElement,
+      formNewPlace,
       imagePlaces,
       placeNameElement.value,
       placeLinkElement.value
@@ -123,13 +94,7 @@ const initPlacePopup = () => {
   });
 };
 
-enableModal({
-  formSelector: ".popup__form",
-  popupSelector: ".popup",
-  openPopupClass: "popup_opened",
-  popupContentSelector: ".popup_content",
-  popupCloseButton: ".popup__close-button",
-});
+enableModal();
 
 enableValidation({
   formSelector: ".popup__form",

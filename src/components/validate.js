@@ -27,12 +27,13 @@ const checkInputValidity = (
   errorClass,
   inputErrorClass
 ) => {
+  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+
   if (inputElement.validity.patternMismatch) {
     inputElement.setCustomValidity(inputElement.dataset.errorMessage);
   } else {
     inputElement.setCustomValidity("");
   }
-  const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
 
   if (!inputElement.validity.valid) {
     showInputError(
@@ -69,9 +70,20 @@ const setEventListeners = (
   errorClass,
   inputErrorClass,
   inactiveButtonClass
-) => {
+) => {  
+  formElement.addEventListener("submit", (evt) => {
+    evt.preventDefault();
+  });
+
   formElement.addEventListener("reset", (evt) => {
-    resetFormStates(formElement, inputList, buttonElement);
+    resetFormStates(
+      formElement,
+      inputList,
+      buttonElement,
+      errorClass,
+      inputErrorClass,
+      inactiveButtonClass
+    );
   });
 
   inputList.forEach((inputElement) => {
@@ -88,11 +100,19 @@ const setEventListeners = (
   toggleButtonState(inputList, buttonElement, inactiveButtonClass);
 };
 
-export const resetFormStates = (formElement, inputList, buttonElement) => {
+export const resetFormStates = (
+  formElement,
+  inputList,
+  buttonElement,
+  errorClass,
+  inputErrorClass,
+  inactiveButtonClass
+) => {
   inputList.forEach((inputElement) => {
-    hideInputError(formElement, inputElement);
+    const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
+    hideInputError(errorElement, inputElement, errorClass, inputErrorClass);
   });
-  toggleButtonState(inputList, buttonElement);
+  toggleButtonState(inputList, buttonElement, inactiveButtonClass);
 };
 
 export const enableValidation = (obj) => {
@@ -103,10 +123,6 @@ export const enableValidation = (obj) => {
       formElement.querySelectorAll(obj.inputSelector)
     );
     const buttonElement = formElement.querySelector(obj.submitButtonSelector);
-
-    formElement.addEventListener("submit", (evt) => {
-      evt.preventDefault();
-    });
 
     setEventListeners(
       inputList,
