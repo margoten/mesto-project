@@ -63,7 +63,6 @@ const createNewPlace = (card) => {
   likeCount.textContent = card.likes.length;
   likeButton.addEventListener("click", () => {
     const isLiked = likeButton.classList.contains(activeLikeButtonClass);
-    console.log(isLiked);
 
     toogleLikeCard(card._id, isLiked)
       .then((data) => {
