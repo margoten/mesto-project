@@ -123,6 +123,7 @@ const handleAvatarFormSubmit = (
     .finally(() => {
       button.textContent = "Сохранить";
     });
+};
 
 const handlePlaceFormSubmit = (
   popup,
