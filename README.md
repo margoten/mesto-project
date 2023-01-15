@@ -3,6 +3,8 @@
 Проект адаптирован под разные экраны с помощью grid  и flex. Cпроектирован в соответвии с БЭМ, с ипользованием html и сcs.
 Для сборки проекта используется WebPack.
 
+[Посмотреть на на Github Pages] (https://margoten.github.io/mesto-project/)
+
 
 **Figma**
 
