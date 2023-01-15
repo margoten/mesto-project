@@ -33,28 +33,29 @@ const avatarUrlElement = popupAvatar.querySelector(
 const formNewPlace = document.forms.newPlace;
 const formEditProfile = document.forms.profileEdit;
 const formEditAvatar = document.forms.avatarEdit;
-const formSaveButtonSelector = ".popup__save-button";
 
 const imagePlaces = document.querySelector(".places__list");
 
-const requestProfileData = () => {
-  getProfileData()
-  .then((data)=> {
-    profile.setCurrentUser(data);
-    profileNameElement.textContent = data.name;
-    profileJobElement.textContent = data.about;
-    profileAvatarElement.src = data.avatar;
-  })
+const fillCards = (cards) => {
+  cards
+    .sort((x, y) => {
+      return new Date(x.createdAt) < new Date(y.createdAt) ? -1 : 1;
+    })
+    .forEach((card) => addPlace(card, imagePlaces));
 };
 
-const fillDefaultPlaces = () => {
-  getInitialCards()
-    .then((data) => {
-      data
-        .sort((a, b) => {
-          return b.createdAt - a.createdAt;
-        })
-        .forEach((card) => addPlace(card, imagePlaces));
+const setProfileData = (userData) => {
+  profile.setCurrentUser(userData);
+  profileNameElement.textContent = userData.name;
+  profileJobElement.textContent = userData.about;
+  profileAvatarElement.src = userData.avatar;
+};
+
+const requestInitData = () => {
+  Promise.all([getProfileData(), getInitialCards()])
+    .then(([userData, cards]) => {
+      setProfileData(userData);
+      fillCards(cards);
     })
     .catch((err) => {
       console.log(err);
@@ -75,7 +76,7 @@ const openProfilePopup = (
 };
 
 const openAvatarPopup = (popup) => {
-  formEditProfile.reset();
+  formEditAvatar.reset();
   showPopup(popup);
 };
 
@@ -84,53 +85,65 @@ const handleProfileFormSubmit = (
   nameElement,
   jobElement,
   profileNameElement,
-  profileJobElement
+  profileJobElement,
+  button
 ) => {
-  const saveButton = formEditProfile.querySelector(formSaveButtonSelector);
-  saveButton.textContent = "Сохранение..."
+  button.textContent = "Сохранение...";
   updateProfileData(nameElement.value, jobElement.value)
     .then((data) => {
       profile.setCurrentUser(data);
       profileNameElement.textContent = nameElement.value;
       profileJobElement.textContent = jobElement.value;
       closePopup(popup);
-      saveButton.textContent = "Сохранить";
     })
     .catch((error) => {
       console.log(error);
+    })
+    .finally(() => {
+      button.textContent = "Сохранить";
     });
-  profileNameElement.textContent = nameElement.value;
-  profileJobElement.textContent = jobElement.value;
-  closePopup(popup);
 };
 
-const handleAvatarFormSubmit = (popup, profileAvatarElement, avatarUrl) => {
-  const saveButton = formEditAvatar.querySelector(formSaveButtonSelector);
-  saveButton.textContent = "Сохранение...";
+const handleAvatarFormSubmit = (
+  popup,
+  profileAvatarElement,
+  avatarUrl,
+  button
+) => {
+  button.textContent = "Сохранение...";
   updateAvatar(avatarUrl)
     .then((data) => {
       profile.setCurrentUser(data);
       profileAvatarElement.src = data.avatar;
       closePopup(popup);
-      saveButton.textContent = "Сохранить";
     })
     .catch((error) => {
       console.log(error);
+    })
+    .finally(() => {
+      button.textContent = "Сохранить";
     });
-};
 
-const handlePlaceFormSubmit = (popup, formElement, places, name, link) => {
-  const saveButton = formNewPlace.querySelector(formSaveButtonSelector);
-  saveButton.textContent = "Сохранение...";
+const handlePlaceFormSubmit = (
+  popup,
+  formElement,
+  places,
+  name,
+  link,
+  button
+) => {
+  button.textContent = "Сохранение...";
   addCard(name, link)
     .then((card) => {
       closePopup(popup);
-      saveButton.textContent = "Сохранить";
       formElement.reset();
       addPlace(card, places);
     })
     .catch((error) => {
       console.log(error);
+    })
+    .finally(() => {
+      button.textContent = "Сохранить";
     });
 };
 
@@ -146,13 +159,14 @@ const initProfilePopup = () => {
     )
   );
 
-  formEditProfile.addEventListener("submit", () => {
+  formEditProfile.addEventListener("submit", (evt) => {
     handleProfileFormSubmit(
       popupProfile,
       nameElement,
       jobElement,
       profileNameElement,
-      profileJobElement
+      profileJobElement,
+      evt.submitter
     );
   });
 };
@@ -160,13 +174,14 @@ const initProfilePopup = () => {
 const initPlacePopup = () => {
   profileAddButton.addEventListener("click", () => showPopup(popupPlace));
 
-  formNewPlace.addEventListener("submit", () => {
+  formNewPlace.addEventListener("submit", (evt) => {
     handlePlaceFormSubmit(
       popupPlace,
       formNewPlace,
       imagePlaces,
       placeNameElement.value,
-      placeLinkElement.value
+      placeLinkElement.value,
+      evt.submitter
     );
   });
 };
@@ -176,11 +191,12 @@ const initAvatarPopup = () => {
     openAvatarPopup(popupAvatar, formEditAvatar)
   );
 
-  formEditAvatar.addEventListener("submit", () => {
+  formEditAvatar.addEventListener("submit", (evt) => {
     handleAvatarFormSubmit(
       popupAvatar,
       profileAvatarElement,
-      avatarUrlElement.value
+      avatarUrlElement.value,
+      evt.submitter
     );
   });
 };
@@ -196,8 +212,7 @@ enableValidation({
   errorClass: "popup__input-error_active",
 });
 
-requestProfileData();
-fillDefaultPlaces();
+requestInitData();
 initProfilePopup();
 initPlacePopup();
 initAvatarPopup();
