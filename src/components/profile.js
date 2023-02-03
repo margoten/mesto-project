@@ -1,5 +1,3 @@
-import { getProfileData } from "./api.js";
-
 export let currentUser = {
   name: "",
   about: "",
