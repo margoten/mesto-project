@@ -4,7 +4,7 @@
 // имеет приватные методы, которые обрабатывают форму: проверяют валидность поля, изменяют состояние кнопки сабмита, устанавливают все обработчики;
 // имеет публичный метод enableValidation, который включает валидацию формы.
 // Для каждой проверяемой формы создавайте экземпляр класса FormValidator.
-class FormValidator {
+export default class FormValidator {
   constructor(obj, form) {
     this._form = form;
     this._inputList = Array.from(
@@ -13,7 +13,7 @@ class FormValidator {
     this._buttonElement = this._form.querySelector(obj.submitButtonSelector);
     this._errorClass = obj.errorClass;
     this._inputErrorClass = obj.inputErrorClass;
-    this._inactiveButtonClass = obj.inactiveButtonClass;
+    this._inactiveButtonClass = obj.inactiveButtonClass;``
   }
 
   _showInputError(errorElement, inputElement, errorMessage) {

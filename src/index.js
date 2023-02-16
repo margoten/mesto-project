@@ -1,219 +1,178 @@
 import "./pages/index.css";
-import { addPlace } from "./components/card.js";
-import { enableValidation } from "./components/validate.js";
-import { enableModal, showPopup, closePopup } from "./components/modal.js";
-import {
-  getInitialCards,
-  updateAvatar,
-  addCard,
-  updateProfileData,
-  getProfileData,
-} from "./components/api.js";
-import * as profile from "./components/profile";
 
-const popupProfile = document.querySelector(".popup_content_profile");
-const profileNameElement = document.querySelector(".profile__title");
-const profileJobElement = document.querySelector(".profile__description");
-const profileAvatarElement = document.querySelector(".profile__avatar");
-const nameElement = popupProfile.querySelector(".popup__input_data_name");
-const jobElement = popupProfile.querySelector(".popup__input_data_description");
+import Api from "./components/Api.js";
+import Card from "./components/Card.js";
+import FormValidator from "./components/FormValidator.js";
+import PopupWithForm from "./components/PopupWithForm.js";
+import PopupWithImage from "./components/PopupWithImage.js";
+import Section from "./components/Section.js";
+import UserInfo from "./components/UserInfo.js";
+
 const profileEditButton = document.querySelector(".profile__edit-button");
-
-const popupPlace = document.querySelector(".popup_content_place");
-const placeNameElement = popupPlace.querySelector(".popup__input_data_name");
-const placeLinkElement = popupPlace.querySelector(
-  ".popup__input_data_description"
-);
 const profileAddButton = document.querySelector(".profile__add-button");
 const profileAvatar = document.querySelector(".profile__avatar-container");
-const popupAvatar = document.querySelector(".popup_content_avatar");
-const avatarUrlElement = popupAvatar.querySelector(
-  ".popup__input_data_description"
+
+let section;
+
+const createNewCard = (item) => {
+  const card = new Card({
+    item,
+    templateSelector: "#create_place",
+    handleCardClick: (src, caption) => popupImage.open(src, caption),
+    handleLikeClick: (id, isLiked) =>
+      api
+        .toogleLikeCard(id, isLiked)
+        .then(() => {
+          card.toggleLike();
+        })
+        .catch((error) => {
+          console.log(error);
+        }),
+    handleRemoveClick: (id, element) =>
+      api
+        .deleteCard(id)
+        .then(() => {
+          card.removeCard(element);
+        })
+        .catch((error) => {
+          console.log(error);
+        }),
+    userId: userData._id,
+  });
+};
+
+const api = new Api({
+  baseUrl: "https://nomoreparties.co/v1/plus-cohort-15",
+  headers: {
+    authorization: "3701fab1-1ed4-4420-a3e5-6e9ed2eab0d1",
+    "Content-Type": "application/json",
+  },
+});
+
+const userInfo = new UserInfo(
+  ".profile__title",
+  ".profile__description",
+  ".profile__avatar"
 );
-const formNewPlace = document.forms.newPlace;
-const formEditProfile = document.forms.profileEdit;
-const formEditAvatar = document.forms.avatarEdit;
+const popupImage = new PopupWithImage(".popup_content_image");
+popupImage.setEventListeners();
 
-const imagePlaces = document.querySelector(".places__list");
-
-const fillCards = (cards) => {
-  cards
-    .sort((x, y) => {
-      return new Date(x.createdAt) < new Date(y.createdAt) ? -1 : 1;
+const profilePopup = new PopupWithForm(".popup_content_profile", (evt) => {
+  profilePopup.setSubmitterText(evt.submitter, "Сохранение...");
+  const request = profilePopup.getInputValues();
+  api
+    .updateProfileData(request.name, request.description)
+    .then((data) => {
+      userInfo.setUserInfo(data.name, data.about, data.avatar);
+      profilePopup.close();
     })
-    .forEach((card) => addPlace(card, imagePlaces));
-};
+    .catch((error) => {
+      console.log(error);
+    })
+    .finally(() => {
+      profilePopup.setSubmitterText(evt.submitter, "Сохранить");
+    });
+});
+profilePopup.setEventListeners();
 
-const setProfileData = (userData) => {
-  profile.setCurrentUser(userData);
-  profileNameElement.textContent = userData.name;
-  profileJobElement.textContent = userData.about;
-  profileAvatarElement.src = userData.avatar;
-};
+profileEditButton.addEventListener("click", () => profilePopup.show());
+
+const avatarPopup = new PopupWithForm(".popup_content_avatar", (evt) => {
+  avatarPopup.setSubmitterText(evt.submitter, "Сохранение...");
+  const request = avatarPopup.getInputValues();
+  api
+    .updateProfileData(request.name, request.description)
+    .then((data) => {
+      userInfo.setUserInfo(data.name, data.about, data.avatar);
+      avatarPopup.close();
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+    .finally(() => {
+      avatarPopup.setSubmitterText(evt.submitter, "Сохранить");
+    });
+});
+
+avatarPopup.setEventListeners();
+
+profileAvatar.addEventListener("click", () => avatarPopup.show());
+
+const placePopup = new PopupWithForm(".popup_content_place", (evt) => {
+  placePopup.setSubmitterText(evt.submitter, "Сохранение...");
+  const request = placePopup.getInputValues();
+  api
+    .addCard(request.name, request.description)
+    .then((data) => {
+      const card = createNewCard(data);
+      section.addItem(card.createNewPlace());
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+    .finally(() => {
+      placePopup.setSubmitterText(evt.submitter, "Сохранить");
+    });
+});
+placePopup.setEventListeners();
+profileAddButton.addEventListener("click", () => placePopup.show());
 
 const requestInitData = () => {
-  Promise.all([getProfileData(), getInitialCards()])
+  Promise.all([api.getProfileData(), api.getInitialCards()])
     .then(([userData, cards]) => {
-      setProfileData(userData);
-      fillCards(cards);
+      userInfo.setUserInfo(userData.name, userData.about, userData.avatar);
+      section = new Section(
+        {
+          items: cards,
+          renderer: (item) => {
+            const card = createNewCard(item);
+            section.addItem(card.createNewPlace());
+          },
+        },
+        ".places__list"
+      );
+      section.renderItems();
     })
     .catch((err) => {
       console.log(err);
     });
 };
 
-const openProfilePopup = (
-  popup,
-  nameElement,
-  jobElement,
-  profileNameElement,
-  profileJobElement
-) => {
-  formEditProfile.reset();
-  nameElement.value = profileNameElement.textContent;
-  jobElement.value = profileJobElement.textContent;
-  showPopup(popup);
-};
+const profileFormValidator = new FormValidator(
+  {
+    formSelector: ".popup__form",
+    inputSelector: ".popup__input",
+    submitButtonSelector: ".popup__save-button",
+    inactiveButtonClass: "popup__save-button_disabled",
+    inputErrorClass: "popup__input_type_error",
+    errorClass: "popup__input-error_active",
+  },
+  document.forms.profileEdit
+);
+const newPlaceFormValidator = new FormValidator(
+  {
+    formSelector: ".popup__form",
+    inputSelector: ".popup__input",
+    submitButtonSelector: ".popup__save-button",
+    inactiveButtonClass: "popup__save-button_disabled",
+    inputErrorClass: "popup__input_type_error",
+    errorClass: "popup__input-error_active",
+  },
+  document.forms.newPlace
+);
+const avatarEditFormValidator = new FormValidator(
+  {
+    formSelector: ".popup__form",
+    inputSelector: ".popup__input",
+    submitButtonSelector: ".popup__save-button",
+    inactiveButtonClass: "popup__save-button_disabled",
+    inputErrorClass: "popup__input_type_error",
+    errorClass: "popup__input-error_active",
+  },
+  document.forms.avatarEdit
+);
 
-const openAvatarPopup = (popup) => {
-  formEditAvatar.reset();
-  showPopup(popup);
-};
-
-const handleProfileFormSubmit = (
-  popup,
-  nameElement,
-  jobElement,
-  profileNameElement,
-  profileJobElement,
-  button
-) => {
-  button.textContent = "Сохранение...";
-  updateProfileData(nameElement.value, jobElement.value)
-    .then((data) => {
-      profile.setCurrentUser(data);
-      profileNameElement.textContent = nameElement.value;
-      profileJobElement.textContent = jobElement.value;
-      closePopup(popup);
-    })
-    .catch((error) => {
-      console.log(error);
-    })
-    .finally(() => {
-      button.textContent = "Сохранить";
-    });
-};
-
-const handleAvatarFormSubmit = (
-  popup,
-  profileAvatarElement,
-  avatarUrl,
-  button
-) => {
-  button.textContent = "Сохранение...";
-  updateAvatar(avatarUrl)
-    .then((data) => {
-      profile.setCurrentUser(data);
-      profileAvatarElement.src = data.avatar;
-      closePopup(popup);
-    })
-    .catch((error) => {
-      console.log(error);
-    })
-    .finally(() => {
-      button.textContent = "Сохранить";
-    });
-};
-
-const handlePlaceFormSubmit = (
-  popup,
-  formElement,
-  places,
-  name,
-  link,
-  button
-) => {
-  button.textContent = "Сохранение...";
-  addCard(name, link)
-    .then((card) => {
-      closePopup(popup);
-      formElement.reset();
-      addPlace(card, places);
-    })
-    .catch((error) => {
-      console.log(error);
-    })
-    .finally(() => {
-      button.textContent = "Сохранить";
-    });
-};
-
-const initProfilePopup = () => {
-  profileEditButton.addEventListener("click", () =>
-    openProfilePopup(
-      popupProfile,
-      nameElement,
-      jobElement,
-      profileNameElement,
-      profileJobElement,
-      formEditProfile
-    )
-  );
-
-  formEditProfile.addEventListener("submit", (evt) => {
-    handleProfileFormSubmit(
-      popupProfile,
-      nameElement,
-      jobElement,
-      profileNameElement,
-      profileJobElement,
-      evt.submitter
-    );
-  });
-};
-
-const initPlacePopup = () => {
-  profileAddButton.addEventListener("click", () => showPopup(popupPlace));
-
-  formNewPlace.addEventListener("submit", (evt) => {
-    handlePlaceFormSubmit(
-      popupPlace,
-      formNewPlace,
-      imagePlaces,
-      placeNameElement.value,
-      placeLinkElement.value,
-      evt.submitter
-    );
-  });
-};
-
-const initAvatarPopup = () => {
-  profileAvatar.addEventListener("click", () =>
-    openAvatarPopup(popupAvatar, formEditAvatar)
-  );
-
-  formEditAvatar.addEventListener("submit", (evt) => {
-    handleAvatarFormSubmit(
-      popupAvatar,
-      profileAvatarElement,
-      avatarUrlElement.value,
-      evt.submitter
-    );
-  });
-};
-
-enableModal();
-
-enableValidation({
-  formSelector: ".popup__form",
-  inputSelector: ".popup__input",
-  submitButtonSelector: ".popup__save-button",
-  inactiveButtonClass: "popup__save-button_disabled",
-  inputErrorClass: "popup__input_type_error",
-  errorClass: "popup__input-error_active",
-});
-
+profileFormValidator.enableValidation();
+newPlaceFormValidator.enableValidation();
+avatarEditFormValidator.enableValidation();
 requestInitData();
-initProfilePopup();
-initPlacePopup();
-initAvatarPopup();
