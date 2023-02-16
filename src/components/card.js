@@ -24,19 +24,22 @@ export default class Card {
     this._handleLikeClick = handleLikeClick;
     this._handleRemoveClick = handleRemoveClick;
     this._userId = userId;
-    this._placeSelector = ".place";
+    this._placeElement = this._template.content
+      .querySelector(".place")
+      .cloneNode(true);
     this._activeLikeButtonClass = "place__like-button_active";
     this._removeButtonSelector = ".place__remove-button";
     this._visibleRemoveButtonClass = "place__remove-button_visible";
     this._placeNameSelector = ".place__name";
     this._placeImageSelector = ".place__image";
     this._placeLikeCountSelector = ".place__like-count";
-
-    this._likeButton = placeElement.querySelector(".place__like-button");
+    this._likeButton = this._placeElement.querySelector(".place__like-button");
+    this._likeCount = this._placeElement.querySelector(this._placeLikeCountSelector);
   }
 
-  toggleLike() {
-    _likeButton.classList.toggle(this._activeLikeButtonClass);
+  toggleLike(count) {
+    this._likeButton.classList.toggle(this._activeLikeButtonClass);
+    this._likeCount.textContent = count;
   }
 
   removeCard(element) {
@@ -44,12 +47,8 @@ export default class Card {
   }
 
   createNewPlace() {
-    const placeElement = this._template.content
-      .querySelector(this.placeSelector)
-      .cloneNode(true);
-    placeElement.querySelector(this._placeNameSelector).textContent =
-      this._.name;
-    const imageElement = placeElement.querySelector(this._placeImageSelector);
+    this._placeElement.querySelector(this._placeNameSelector).textContent = this._name;
+    const imageElement = this._placeElement.querySelector(this._placeImageSelector);
     imageElement.src = this._link;
     imageElement.alt = this._name;
 
@@ -57,21 +56,21 @@ export default class Card {
       this._handleCardClick(imageElement.src, imageElement.alt);
     });
 
-    const removeButton = placeElement.querySelector(_removeButtonSelector);
-    if (this._.owner === this._userId) {
+    const removeButton = this._placeElement.querySelector(this._removeButtonSelector);
+    if (this._ownerId === this._userId) {
       removeButton.classList.add(this._visibleRemoveButtonClass);
     }
 
     removeButton.addEventListener("click", () => {
-      this._handleRemoveClick(this._id, placeElement);
+      this._handleRemoveClick(this._id, this._placeElement);
     });
 
     if (this._likes.some((user) => user._id === this._userId)) {
       this._likeButton.classList.add(this._activeLikeButtonClass);
     }
     
-    const likeCount = placeElement.querySelector(this._placeLikeCountSelector);
-    likeCount.textContent = this._.likes.length;
+    this._likeCount.textContent = this._likes.length;
+
     this._likeButton.addEventListener("click", () => {
       const isLiked = this._likeButton.classList.contains(
         this._activeLikeButtonClass
@@ -79,6 +78,6 @@ export default class Card {
       this._handleLikeClick(this._id, isLiked)
        
     });
-    return placeElement;
+    return this._placeElement;
   }
 }

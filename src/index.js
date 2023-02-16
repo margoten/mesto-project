@@ -11,19 +11,21 @@ import UserInfo from "./components/UserInfo.js";
 const profileEditButton = document.querySelector(".profile__edit-button");
 const profileAddButton = document.querySelector(".profile__add-button");
 const profileAvatar = document.querySelector(".profile__avatar-container");
+const profileNameElement = document.querySelector(".profile__title");
+const profileJobElement = document.querySelector(".profile__description");
 
 let section;
 
-const createNewCard = (item) => {
+const createNewCard = (data, id) => {
   const card = new Card({
-    item,
+    data,
     templateSelector: "#create_place",
-    handleCardClick: (src, caption) => popupImage.open(src, caption),
+    handleCardClick: (src, caption) => popupImage.show(src, caption),
     handleLikeClick: (id, isLiked) =>
       api
         .toogleLikeCard(id, isLiked)
-        .then(() => {
-          card.toggleLike();
+        .then((data) => {
+          card.toggleLike(data.likes.length);
         })
         .catch((error) => {
           console.log(error);
@@ -37,8 +39,9 @@ const createNewCard = (item) => {
         .catch((error) => {
           console.log(error);
         }),
-    userId: userData._id,
+    userId: id,
   });
+  return card;
 };
 
 const api = new Api({
@@ -49,21 +52,23 @@ const api = new Api({
   },
 });
 
-const userInfo = new UserInfo(
-  ".profile__title",
-  ".profile__description",
-  ".profile__avatar"
-);
-const popupImage = new PopupWithImage(".popup_content_image");
+const userInfo = new UserInfo({
+  nameSelector: ".profile__title",
+  desctiptionSelector: ".profile__description",
+  avatarSelector: ".profile__avatar",
+});
+
+const popupImage = new PopupWithImage("popup_content_image");
 popupImage.setEventListeners();
 
-const profilePopup = new PopupWithForm(".popup_content_profile", (evt) => {
+const profilePopup = new PopupWithForm("popup_content_profile", (evt) => {
   profilePopup.setSubmitterText(evt.submitter, "Сохранение...");
-  const request = profilePopup.getInputValues();
+  const newName = profilePopup.getInputValue("name");
+  const newAbout = profilePopup.getInputValue("description");
   api
-    .updateProfileData(request.name, request.description)
+    .updateProfileData(newName, newAbout)
     .then((data) => {
-      userInfo.setUserInfo(data.name, data.about, data.avatar);
+      userInfo.setUserInfo(data.name, data.about, data.avatar, data._id);
       profilePopup.close();
     })
     .catch((error) => {
@@ -75,15 +80,20 @@ const profilePopup = new PopupWithForm(".popup_content_profile", (evt) => {
 });
 profilePopup.setEventListeners();
 
-profileEditButton.addEventListener("click", () => profilePopup.show());
+profileEditButton.addEventListener("click", () => {
+  const values = new Map();
+  values.set("name", profileNameElement.textContent);
+  values.set("description", profileJobElement.textContent);
+  profilePopup.setInputValues(values);
+  profilePopup.show();
+});
 
-const avatarPopup = new PopupWithForm(".popup_content_avatar", (evt) => {
+const avatarPopup = new PopupWithForm("popup_content_avatar", (evt) => {
   avatarPopup.setSubmitterText(evt.submitter, "Сохранение...");
-  const request = avatarPopup.getInputValues();
   api
-    .updateProfileData(request.name, request.description)
+    .updateAvatar(avatarPopup.getInputValue("url"))
     .then((data) => {
-      userInfo.setUserInfo(data.name, data.about, data.avatar);
+      userInfo.setUserInfo(data.name, data.about, data.avatar, data._id);
       avatarPopup.close();
     })
     .catch((error) => {
@@ -98,14 +108,15 @@ avatarPopup.setEventListeners();
 
 profileAvatar.addEventListener("click", () => avatarPopup.show());
 
-const placePopup = new PopupWithForm(".popup_content_place", (evt) => {
+const placePopup = new PopupWithForm("popup_content_place", (evt) => {
   placePopup.setSubmitterText(evt.submitter, "Сохранение...");
-  const request = placePopup.getInputValues();
   api
-    .addCard(request.name, request.description)
+    .addCard(placePopup.getInputValue("name"), placePopup.getInputValue("url")
+    )
     .then((data) => {
-      const card = createNewCard(data);
+      const card = createNewCard(data, userInfo.getCurrentId());
       section.addItem(card.createNewPlace());
+      placePopup.close();
     })
     .catch((error) => {
       console.log(error);
@@ -120,13 +131,20 @@ profileAddButton.addEventListener("click", () => placePopup.show());
 const requestInitData = () => {
   Promise.all([api.getProfileData(), api.getInitialCards()])
     .then(([userData, cards]) => {
-      userInfo.setUserInfo(userData.name, userData.about, userData.avatar);
+      userInfo.setUserInfo(
+        userData.name,
+        userData.about,
+        userData.avatar,
+        userData._id
+      );
       section = new Section(
         {
-          items: cards,
+          items: cards.sort((x, y) => {
+            return new Date(x.createdAt) < new Date(y.createdAt) ? -1 : 1;
+          }),
           renderer: (item) => {
-            const card = createNewCard(item);
-            section.addItem(card.createNewPlace());
+            const card = createNewCard(item, userData._id);
+            return card.createNewPlace();
           },
         },
         ".places__list"

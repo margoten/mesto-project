@@ -9,18 +9,24 @@ export default class UserInfo {
     this._nameElement = document.querySelector(nameSelector);
     this._descriptionElement = document.querySelector(desctiptionSelector);
     this._avatarElement = document.querySelector(avatarSelector);
+    this._userId;
   }
 
   getUserInfo() {
     return {
-      name: this._nameElement .textContent,
-      description: this._descriptionElement .textContent,
+      name: this._nameElement.textContent,
+      description: this._descriptionElement.textContent,
     };
   }
 
-  setUserInfo(name, description, avatar) {
-    this._namev.textContent = name;
-    this._descriptionElement .textContent = description;
+  getCurrentId() {
+    return this._userId;
+  }
+
+  setUserInfo(name, description, avatar, id) {
+    this._nameElement.textContent = name;
+    this._descriptionElement.textContent = description;
     this._avatarElement.src = avatar;
+    this._userId = id;
   }
 }

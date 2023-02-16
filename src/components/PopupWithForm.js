@@ -8,25 +8,29 @@
 import Popup from "./Popup";
 
 export default class PopupWithForm extends Popup {
-  constructor(popupSelector, handleSubmitForm) {
-    super(popupSelector);
+  constructor(popupClass, handleSubmitForm) {
+    super(popupClass);
     this._handleSubmitForm = handleSubmitForm;
     this._form = this._popup.querySelector(".popup__form");
     this._nameElement = this._popup.querySelector(".popup__input_data_name");
     this._descriptionElement = this._popup.querySelector(
       ".popup__input_data_description"
     );
+    this._inputList = this._form.querySelectorAll("input");
   }
 
   setSubmitterText(submitter, text) {
     submitter.textContent = text;
   }
 
-  getInputValues() {
-    return {
-      dataName: this._nameElement.textContent,
-      dataDescription: this._descriptionElement.textContent,
-    };
+  setInputValues(values) {
+    this._inputList.forEach((input) => {
+      input.value = values.get(input.name);
+    });
+  }
+
+  getInputValue(inputname) {
+    return Array.from(this._inputList).filter((input) => input.name === inputname)[0].value;
   }
 
   setEventListeners() {

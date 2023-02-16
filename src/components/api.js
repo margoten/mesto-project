@@ -14,13 +14,13 @@ export default class Api {
   getInitialCards() {
      return fetch(`${this._baseUrl}/cards`, {
        headers: this._headers,
-     }).then(checkResponse);
+     }).then(this._checkResponse);
   }
 
   getProfileData () {
   return fetch(`${this._baseUrl}/users/me`, {
     headers: this._headers,
-  }).then(checkResponse);
+  }).then(this._checkResponse);
 };
 
   
@@ -31,7 +31,7 @@ updateAvatar (avatarUrl) {
     body: JSON.stringify({
       avatar: avatarUrl,
     }),
-  }).then(checkResponse);
+  }).then(this._checkResponse);
 };
 
 updateProfileData (nameValue, aboutValue) {
@@ -42,7 +42,7 @@ updateProfileData (nameValue, aboutValue) {
       name: nameValue,
       about: aboutValue,
     }),
-  }).then(checkResponse);
+  }).then(this._checkResponse);
 };
 
 addCard (cardName, cardUrl) {
@@ -53,21 +53,21 @@ addCard (cardName, cardUrl) {
       name: cardName,
       link: cardUrl,
     }),
-  }).then(checkResponse);
+  }).then(this._checkResponse);
 };
 
 toogleLikeCard (cardId, isLiked) {
   return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
     headers: this._headers,
     method: isLiked ? "DELETE" : "PUT",
-  }).then(checkResponse);
+  }).then(this._checkResponse);
 };
 
 deleteCard (cardId) {
   return fetch(`${this._baseUrl}/cards/${cardId}`, {
     headers: this._headers,
     method: "DELETE",
-  }).then(checkResponse);
+  }).then(this._checkResponse);
 };
 
 }

@@ -29,7 +29,7 @@ export default class FormValidator {
   }
 
   _checkInputValidity(inputElement) {
-    const errorElement = this.form.querySelector(`.${inputElement.id}-error`);
+    const errorElement = this._form.querySelector(`.${inputElement.id}-error`);
 
     if (inputElement.validity.patternMismatch) {
       inputElement.setCustomValidity(inputElement.dataset.errorMessage);
@@ -83,7 +83,7 @@ export default class FormValidator {
   }
 
   _resetFormStates() {
-    this.inputList.forEach((inputElement) => {
+    this._inputList.forEach((inputElement) => {
       const errorElement = this._form.querySelector(
         `.${inputElement.id}-error`
       );
@@ -95,6 +95,6 @@ export default class FormValidator {
   }
 
   enableValidation() {
-    setEventListeners();
+    this._setEventListeners();
   }
 }
